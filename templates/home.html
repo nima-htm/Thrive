@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}صفحه اصلی{% endblock %}
+
+{% block content %}
+<!-- Hero Slider -->
+<div id="heroCarousel" class="carousel slide mb-5 shadow-sm rounded" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="اسلاید ۱"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="اسلاید ۲"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="اسلاید ۳"></button>
+    </div>
+    <div class="carousel-inner rounded">
+        <div class="carousel-item active">
+            <img src="{% static 'images/slide1.png' %}" class="d-block w-100" alt="slide1">
+            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                <h5>سیستم نوبت‌دهی سریع و آسان</h5>
+                <p>فقط با چند کلیک نوبت خود را رزرو کنید.</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="{% static 'images/slide2.png' %}" class="d-block w-100" alt="slide2">
+            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                <h5>مشاوران حرفه‌ای</h5>
+                <p>با بهترین مشاوران در حوزه‌های مختلف گفت‌وگو کنید.</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="{% static 'images/slide3.png' %}" class="d-block w-100" alt="slide3">
+            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                <h5>پشتیبانی ۲۴ ساعته</h5>
+                <p>هر زمان به کمک نیاز داشتید، ما اینجاییم.</p>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">قبلی</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">بعدی</span>
+    </button>
+</div>
+
+
+<div class="text-center mb-5">
+    <h1 class="mb-3">به سیستم نوبت‌دهی مشاوره خوش آمدید</h1>
+    <p class="lead">با مشاوران حرفه‌ای در سریع‌ترین زمان نوبت بگیرید</p>
+</div>
+
+<!-- Appointment Box -->
+<!-- Appointment Box -->
+<section class="bg-light p-4 rounded shadow-sm mb-5">
+    <h3 class="text-center mb-4">رزرو سریع نوبت</h3>
+    <div class="row">
+{#        {% if available_appointments %}#}
+{#            {% for appointment in available_appointments %}#}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ appointment.doctor.name }}</h5>
+                        <p class="card-text text-muted mb-1">
+                            {{ appointment.date|date:"Y/m/d" }} - {{ appointment.time|time:"H:i" }}
+                        </p>
+                        <a href="" class="btn btn-outline-primary mt-2">
+                            رزرو نوبت
+                        </a>
+                    </div>
+                </div>
+            </div>
+{#            {% endfor %}#}
+{#        {% else %}#}
+            <p class="text-center text-muted">در حال حاضر نوبت فعالی موجود نیست.</p>
+{#        {% endif %}#}
+    </div>
+</section>
+
+
+<!-- Testimonials -->
+<section class="mb-5">
+    <h3 class="text-center mb-4">نظرات کاربران</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <p>خیلی راحت تونستم نوبت بگیرم. مشاور بسیار حرفه‌ای بود.</p>
+                <div class="text-muted">– علی محمدی</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <p>رابط کاربری ساده و سریع. حتماً دوباره استفاده می‌کنم.</p>
+                <div class="text-muted">– سارا احمدی</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <p>پشتیبانی خیلی خوبی داشتن. ممنون از تیم خوبتون.</p>
+                <div class="text-muted">– رضا کریمی</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Doctor Ratings -->
+<section class="bg-light p-4 rounded shadow-sm mb-5">
+    <h3 class="text-center mb-4">رتبه‌بندی مشاوران</h3>
+    <div class="row text-center">
+        <div class="col-md-3">
+            <h5>دکتر احمدی</h5>
+            <p>⭐⭐⭐⭐☆</p>
+        </div>
+        <div class="col-md-3">
+            <h5>دکتر رضایی</h5>
+            <p>⭐⭐⭐⭐⭐</p>
+        </div>
+        <div class="col-md-3">
+            <h5>دکتر سلطانی</h5>
+            <p>⭐⭐⭐☆☆</p>
+        </div>
+        <div class="col-md-3">
+            <h5>دکتر میرزایی</h5>
+            <p>⭐⭐⭐⭐☆</p>
+        </div>
+    </div>
+</section>
+
+<!-- Portfolios -->
+<section class="mb-5">
+    <h3 class="text-center mb-4">مشاوران ما</h3>
+    <div class="row">
+        <div class="col-md-3 text-center">
+            <img src="{% static 'images/doctor1.jpg' %}" class="rounded-circle mb-2" width="100" alt="doctor">
+            <h6>دکتر احمدی</h6>
+            <p class="text-muted small">متخصص روانشناسی</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <img src="{% static 'images/doctor2.jpg' %}" class="rounded-circle mb-2" width="100" alt="doctor">
+            <h6>دکتر رضایی</h6>
+            <p class="text-muted small">مشاور خانواده</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <img src="{% static 'images/doctor3.jpg' %}" class="rounded-circle mb-2" width="100" alt="doctor">
+            <h6>دکتر سلطانی</h6>
+            <p class="text-muted small">روان‌درمانگر</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <img src="{% static 'images/doctor4.jpg' %}" class="rounded-circle mb-2" width="100" alt="doctor">
+            <h6>دکتر میرزایی</h6>
+            <p class="text-muted small">متخصص کودک و نوجوان</p>
+        </div>
+    </div>
+</section>
+
+<!-- About Us -->
+<section class="bg-light p-4 rounded shadow-sm mb-5">
+    <h3 class="text-center mb-4">درباره ما</h3>
+    <p class="text-center">سیستم نوبت‌دهی ما با هدف آسان‌سازی روند مشاوره راه‌اندازی شده است. تیم ما متشکل از مشاوران حرفه‌ای است که آماده خدمت‌رسانی به شما هستند.</p>
+</section>
+
+<!-- CTA -->
+<section class="text-center">
+    <h4 class="mb-3">هنوز ثبت‌نام نکردی؟</h4>
+    <a href="{% url 'accounts:signup' %}" class="btn btn-success btn-lg">ثبت‌نام کنید</a>
+</section>
+
+{% endblock %}
