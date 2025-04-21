@@ -35,13 +35,15 @@ class SignUpForm(UserCreationForm):
         required=False
 
     )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     class Meta:
         model = User
         fields = ('username','first_name','last_name','phone_number', 'email', 'password1', 'password2')
 
-
     def __init__(self,*args,**kwargs):
+        self.user = kwargs.get('instance')
         super().__init__(*args,**kwargs)
         self.instance.role = 'patient'
 
@@ -57,6 +59,14 @@ class SignUpForm(UserCreationForm):
 
         self.fields['password1'].help_text = ''
         self.fields['password2'].help_text = 'برای تأیید، رمز عبور را مجدداً وارد کنید'
+        
+        
+        def clean(self):
+            cleaned_data = super().clean()
+            username = cleaned_data.get('username')
+            if User.objects.filter(username=username).exclude(id=self.instance.id).exists():
+                raise forms.ValidationError('نام کاربری قبلاً ثبت شده است.')
+            return cleaned_data
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(
@@ -67,8 +77,80 @@ class LoginForm(AuthenticationForm):
         widget=forms.PasswordInput(attrs={'class':'form-control', 'placeholder' :''}))
 
 
-class AdminUserEditForm(forms.ModelForm):
+class UserProfileForm(forms.ModelForm):
+    first_name = forms.CharField(
+        max_length=40, required=True,
+        label='نام ',
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    last_name = forms.CharField(
+        max_length=50,
+        required=True,
+        label='نام خانوادگی  ',
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    
+    username = forms.CharField(
+        label='نام کاربری', 
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    phone_number = forms.CharField(
+        label='شماره تلفن',
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False
 
+    )
+    email = forms.EmailField(
+        label='ایمیل',
+        widget=forms.EmailInput(attrs={'class': 'form-control'}),
+        required=False
+
+    )
+    
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'phone_number', 'email')
+        
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.get('instance')
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get('username')
+        if User.objects.filter(username=username).exclude(id=self.instance.id).exists():
+            raise forms.ValidationError('')
+        return cleaned_data
+        
+class AdminUserEditForm(forms.ModelForm):
+    username = forms.CharField(
+        label='نام کاربری',
+        widget=forms.TextInput(attrs={'class': 'form-control bg-secondary'})
+
+    )
+    first_name = forms.CharField(
+        max_length=40, required=True,
+        label='نام ',
+        widget=forms.TextInput(attrs={'class': 'form-control '})
+    )
+    last_name = forms.CharField(
+        max_length=50, required=True,
+        label='نام خانوادگی  ',
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    
+    phone_number = forms.CharField(
+        label='شماره تلفن',
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False
+
+    )
+    email = forms.EmailField(
+        label='ایمیل',
+        widget=forms.EmailInput(attrs={'class': 'form-control'}),
+        required=False
+
+    )
     role = forms.ChoiceField(
         choices=User.Role,
         widget=forms.Select(attrs={'class': 'form-select'})

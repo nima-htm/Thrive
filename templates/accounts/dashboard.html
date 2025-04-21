@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}داشبورد کاربری{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-card {
+        transition: transform 0.2s;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+    }
+    .stat-card {
+        background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+        color: white;
+    }
+    .profile-section {
+        background-color: #f8f9fa;
+        border-radius: 15px;
+        padding: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    {% comment %} {% if messages %}
+    <div class="messages-container mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %} {% endcomment %}
+
+    <h2 class="mb-4">
+        <i class="fas fa-tachometer-alt me-2"></i>
+         پنل کاربری
+    </h2>
+
+    <!-- Quick Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="dashboard-card stat-card p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-0">نوبت‌های آینده</h6>
+                        <h3 class="mb-0">3</h3>
+                    </div>
+                    <i class="fas fa-calendar fa-2x"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-card stat-card p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-0">نوبت‌های گذشته</h6>
+                        <h3 class="mb-0">12</h3>
+                    </div>
+                    <i class="fas fa-history fa-2x"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-card stat-card p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-0">پیام‌های جدید</h6>
+                        <h3 class="mb-0">2</h3>
+                    </div>
+                    <i class="fas fa-envelope fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Profile Section -->
+        <div class="col-md-4">
+            <div class="dashboard-card profile-section">
+                <div class="text-center mb-4">
+                    <img src="{% static 'images/default-avatar.png' %}" alt="پروفایل" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                    <h4>{{ user.get_full_name|default:user.username }}</h4>
+                    <p class="text-muted">
+                        
+                        {% if user.role == 'patient' %}
+                            کاربر عادی
+                        {% elif user.role == 'advisor' %}
+                            مشاور
+                        {% elif user.role == 'admin' %}
+                            مدیر سیستم
+
+                        {% endif %}
+                            
+                    </p>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-save me-2"></i>ذخیره تغییرات
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Appointments Section -->
+        <div class="col-md-8">
+            <div class="dashboard-card bg-white p-4">
+                <h4 class="mb-4">
+                    <i class="fas fa-calendar-check me-2"></i>
+                    نوبت‌های آینده
+                </h4>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>تاریخ</th>
+                                <th>ساعت</th>
+                                <th>مشاور</th>
+                                <th>وضعیت</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>۱۴۰۴/۰۲/۰۱</td>
+                                <td>۱۰:۰۰</td>
+                                <td>دکتر رضایی</td>
+                                <td><span class="badge bg-success">تایید شده</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-times"></i> لغو
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Add more appointment rows as needed -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add any dashboard-specific JavaScript here
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize any components that need JavaScript
+    });
+</script>
+{% endblock %}
