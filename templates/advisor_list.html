@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}فهرست متخصصین{% endblock %}
+
+{% block content %}
+<h1>لیست تمام مشاوران</h1>
+<table>
+    <tr>
+        <th>نام </th>
+        <th>ایمیل</th>
+
+    </tr>
+    {% for advisor in advisors %}
+    <tr>
+        <td>{{ advisor.first_name }} {{ advisor.last_name }}</td>
+        <td>{{ advisor.email }}</td>
+        <th><a href="">اطلاعات درمانگر</a> </th>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
