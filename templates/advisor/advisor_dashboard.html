@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}داشبورد مشاور{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-card {
+        transition: transform 0.2s;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        background: #ffffff;
+    }
+    .dashboard-card:hover {
+        transform: translateY(-3px);
+    }
+    .stat-card {
+        background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+        color: white;
+    }
+    .profile-section {
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 25px;
+    }
+    .appointment-card {
+        border-left: 4px solid transparent;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+    }
+    .appointment-pending {
+        border-left-color: #f39c12;
+    }
+    .appointment-accepted {
+        border-left-color: #2ecc71;
+    }
+    .appointment-cancelled {
+        border-left-color: #e74c3c;
+    }
+    .status-badge {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+    }
+    .btn-action {
+        border-radius: 20px;
+        padding: 5px 15px;
+        font-size: 0.9rem;
+    }
+    .stats-icon {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.2);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="fas fa-user-md me-2"></i>
+            پنل مشاور
+        </h2>
+        <div class="text-muted">
+            {% now "l j F Y" %}
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="dashboard-card stat-card p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-0 text-white-50">نوبت‌های امروز</p>
+                        <h3 class="mb-0">{{ today_appointments_count|default:"0" }}</h3>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-calendar-day fa-lg"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-card stat-card p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-0 text-white-50">نوبت‌های در انتظار</p>
+                        <h3 class="mb-0">{{ pending_appointments_count|default:"0" }}</h3>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-clock fa-lg"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-card stat-card p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="mb-0 text-white-50">مجموع مراجعین</p>
+                        <h3 class="mb-0">{{ total_patients_count|default:"0" }}</h3>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-users fa-lg"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Profile Section -->
+        <div class="col-md-4">
+            <div class="dashboard-card profile-section">
+                <div class="text-center mb-4">
+                    <img src="{% static 'images/default-avatar.png' %}" alt="پروفایل" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #3498db;">
+                    <h4>{{ user.get_full_name|default:user.username }}</h4>
+                    <p class="text-muted">مشاور حرفه‌ای</p>
+                    <div class="d-flex justify-content-center gap-2 mb-4">
+                        <span class="badge bg-info">
+                            <i class="fas fa-star me-1"></i>
+                            امتیاز: {{ advisor_rating|default:"5" }}/5
+                        </span>
+                        <span class="badge bg-success">
+                            <i class="fas fa-check-circle me-1"></i>
+                            تأیید شده
+                        </span>
+                    </div>
+                </div>
+                <div class="border-top pt-4">
+                    <h5 class="mb-3">اطلاعات تماس</h5>
+                    <div class="mb-2">
+                        <i class="fas fa-envelope text-muted me-2"></i>
+                        {{ user.email }}
+                    </div>
+                    <div class="mb-2">
+                        <i class="fas fa-phone text-muted me-2"></i>
+                        {{ user.phone_number|default:"تنظیم نشده" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointments Section -->
+        <div class="col-md-8">
+            <div class="dashboard-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0">
+                        <i class="fas fa-calendar-check me-2"></i>
+                        مدیریت نوبت‌ها
+                    </h4>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-primary active">همه</button>
+                        <button class="btn btn-outline-primary">در انتظار</button>
+                        <button class="btn btn-outline-primary">تأیید شده</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>تاریخ</th>
+                                <th>ساعت</th>
+                             
+                                <th>وضعیت</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in appointments %}
+            <tr class="appointment-card {% if appointment.status == 'pending' %}appointment-pending{% elif appointment.status == 'booked' %}appointment-accepted{% elif appointment.status == 'canceled' %}appointment-cancelled{% endif %}">
+                <td>{{ appointment.appointment_time|date:"Y/m/d" }}</td>
+                <td>{{ appointment.appointment_time|time:"H:i" }}</td>
+                <td>
+                    {% if appointment.status == 'pending' %}
+                        <span class="status-badge bg-warning text-dark">در انتظار تایید</span>
+                    {% elif appointment.status == 'booked' %}
+                        <span class="status-badge bg-success">رزرو شده</span>
+                    {% elif appointment.status == 'canceled' %}
+                        <span class="status-badge bg-danger">کنسل شده</span>
+                    {% elif appointment.status == 'available' %}
+                        <span class="status-badge bg-info">در دسترس</span>
+                    {% elif appointment.status == 'not_available' %}
+                        <span class="status-badge bg-secondary">غیر قابل دسترس</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if appointment.status == 'pending' %}
+                        <form method="post" action="{% url 'appointments:update_status' appointment.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="available">
+                            <button type="submit" class="btn btn-action btn-success btn-sm me-1">
+                                <i class="fas fa-check me-1"></i>تأیید
+                            </button>
+                        </form>
+                        <form method="post" action="{% url 'appointments:update_status' appointment.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="status" value="canceled">
+                            <button type="submit" class="btn btn-action btn-danger btn-sm">
+                                <i class="fas fa-times me-1"></i>رد
+                            </button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center py-4">
+                    <i class="fas fa-calendar-times fa-2x mb-2 text-muted"></i>
+                    <p class="mb-0">هیچ نوبتی یافت نشد</p>
+                </td>
+            </tr>
+            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Filter appointments based on status
+        const filterButtons = document.querySelectorAll('.btn-group .btn');
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    });
+</script>
+{% endblock %}

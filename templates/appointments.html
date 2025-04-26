@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}لیست نوبت ها{% endblock %}
+
+{% block content %}
+<div class="container mt-5 pt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-calendar-check me-2"></i>لیست نوبت ها</h5>
+        </div>
+        <div class="card-body">
+            {% if appointments %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>مشاور</th>
+                            <th>تاریخ و زمان</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in appointments %}
+                        <tr>
+                            <td>{{ appointment.get_advisor_full_name }}</td>
+                            <td>{{ appointment.appointment_time|date:"Y/m/d - H:i" }}</td>
+                           
+                            <td>
+                                {% if appointment.status == 'available' %}
+                                <button class="btn btn-sm btn-success">
+                                    <i class="fas fa-check me-1"></i>رزرو
+                                </button>
+                                {% endif %}
+                                {% if appointment.status == 'booked' and user == appointment.patient %}
+                                <button class="btn btn-sm btn-danger">
+                                    <i class="fas fa-times me-1"></i>لغو
+                                </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                <p class="text-muted">هیچ نوبتی یافت نشد.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
